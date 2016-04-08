@@ -1,5 +1,7 @@
 /**
- * Pebble WS Ferries
+ * WA Ferries App
+ *
+ * Author: Rogoon
  */
 var DEBUG = true;
 
@@ -191,7 +193,6 @@ function loadSailingsData(route){
   );
 }
 
-
 function loadTimesData(sailing){
   if (DEBUG){
     console.log("");
@@ -227,7 +228,6 @@ function loadTimesData(sailing){
 }
 
 // Util Functions //////////////////
-
 // Returns a list of route names
 function parseRoutes(data){
   
