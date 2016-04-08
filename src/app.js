@@ -23,7 +23,7 @@ function displaySplashScreen(message){
     size: new Vector2(144, 168),
     text: message,
     font:'GOTHIC_28_BOLD',
-    color:'black',
+    color:'#FFFFFF',
     textOverflow:'wrap',
     textAlign:'center',
     textColor:'#FFFFFF',
@@ -91,7 +91,7 @@ function displaySailingsMenu(data){
 
 // Construct URL
 var today = getToday();
-var API_KEY = 'INSERT_API_KEY';
+var API_KEY = 'INSERT_API_KEY_HERE';
 
 
 loadRoutesData();
@@ -115,7 +115,7 @@ function loadRoutesData(){
       var menuItems = parseRoutes(data);
     
       if (DEBUG){
-        console.log('Successfully fetched ferry data!');
+        console.log('Successfully fetched routes data!');
         // Check the items are extracted OK
         for(var i = 0; i < menuItems.length; i++) {
           console.log(menuItems[i].title + ' | ' + menuItems[i].id);
@@ -127,7 +127,7 @@ function loadRoutesData(){
     },
     function(error) {
       // Failure!
-      console.log('Failed fetching ferry data: ' + error);
+      console.log('Failed fetching routes data: ' + error);
     }
   );
 }
@@ -138,7 +138,7 @@ function loadSailingsData(route){
   }
   displaySplashScreen("loading data...");
   
-  var sailingsURL = "";
+  var sailingsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest//terminalsandmatesbyroute/' +  today + '/' + route.id + '?apiaccesscode=' + API_KEY;
   
   //make ajax for sailings
   // Make the request for route data
@@ -149,27 +149,23 @@ function loadSailingsData(route){
     },
     function(data) {
       // Success!
-      var menuItems = parseRoutes(data);
+      var menuItems = parseSailings(data);
     
       if (DEBUG){
-        console.log('Successfully fetched ferry data!');
+        console.log('Successfully fetched sailing data!');
         // Check the items are extracted OK
         for(var i = 0; i < menuItems.length; i++) {
-          console.log(menuItems[i].title + ' | ' + menuItems[i].id);
+          console.log(menuItems[i].title);
         }
       }
-    
       displaySailingsMenu(menuItems);
-    
     },
     function(error) {
       // Failure!
-      console.log('Failed fetching ferry data: ' + error);
+      console.log('Failed fetching sailing data: ' + error);
     }
   );
-  
 }
-
 
 // Util Functions //////////////////
 
@@ -196,6 +192,28 @@ function parseRoutes(data){
       title:abbrev_name,
       subtitle:full_name,
       id:id
+    });
+  }
+  return items;
+}
+
+function parseSailings(data){
+  
+  var items = [];
+  for(var i in data) {
+    
+    // Get Route ID
+    var depart_id = data[i].DepartingTerminalID;
+    var arrive_id = data[i].ArrivingTerminalID;
+    
+    // Get sailing name
+    var full_sailing_name = data[i].DepartingDescription.substring(0, 6) + ' / ' + data[i].ArrivingDescription.substring(0, 6);
+   
+    // Add to menu items array
+    items.push({
+      title:full_sailing_name,
+      depart_id:depart_id,
+      arrive_id:arrive_id
     });
   }
   return items;
