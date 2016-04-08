@@ -125,7 +125,7 @@ loadRoutesData();
 
 function loadRoutesData(){
 
-  displaySplashScreen('Downloading ferry data...');
+  displaySplashScreen('Downloading Routes Data...');
   
   var routesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/routes/' + today + '?apiaccesscode=' + API_KEY;
   // Make the request for route data
@@ -160,7 +160,7 @@ function loadSailingsData(route){
   if (DEBUG){
     console.log(route.id);
   }
-  displaySplashScreen("loading sailings...");
+  displaySplashScreen("Downloading Sailings Data...");
   
   var sailingsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest//terminalsandmatesbyroute/' +  today + '/' + route.id + '?apiaccesscode=' + API_KEY;
   
@@ -196,7 +196,7 @@ function loadTimesData(sailing){
   if (DEBUG){
     console.log("");
   }
-  displaySplashScreen("loading times...");
+  displaySplashScreen("Downloading Times Data...");
   
   var timesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule/' + today + '/' + sailing.route_id  + '?apiaccesscode=' + API_KEY;
   //make ajax for sailings
