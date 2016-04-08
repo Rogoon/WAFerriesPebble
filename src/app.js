@@ -65,7 +65,7 @@ function displaySailingsMenu(data){
   // Construct Menu to show to user
 
   // Add data & style to menu
-  var routesMenu = new UI.Menu({
+  var sailingsMenu = new UI.Menu({
     
     backgroundColor: '#1976D2',
     highlightBackgroundColor: '#2196F3',
@@ -78,22 +78,46 @@ function displaySailingsMenu(data){
   });
   
   // Add an action for SELECT
-  routesMenu.on('select', function(e) {
-    // TODO
+  sailingsMenu.on('select', function(e) {
+    loadTimesData(data[e.itemIndex]);
   });
   
   // Show the Menu, hide the splash
-  routesMenu.show();
+  sailingsMenu.show();
+  splashWindow.hide(); 
+}
+
+function displayTimesMenu(data){
+  // Construct Menu to show to user
+
+  // Add data & style to menu
+  var timesMenu = new UI.Menu({
+    
+    backgroundColor: '#1976D2',
+    highlightBackgroundColor: '#2196F3',
+    textColor: '#FFFFFF',
+    highlightTextColor: '#FFFFFF',
+    sections: [{
+      title: 'Times',
+      items: data
+    }]
+  });
+  
+  // Add an action for SELECT
+  timesMenu.on('select', function(e) {
+    // TODO: Push to timeline
+  });
+  
+  // Show the Menu, hide the splash
+  timesMenu.show();
   splashWindow.hide(); 
 }
 
 // Main ////////////////////////////
-
-// Construct URL
 var today = getToday();
 var API_KEY = 'INSERT_API_KEY_HERE';
 
-
+// Gets this all going
 loadRoutesData();
 
 // AJAX functions ///////////////////
@@ -136,7 +160,7 @@ function loadSailingsData(route){
   if (DEBUG){
     console.log(route.id);
   }
-  displaySplashScreen("loading data...");
+  displaySplashScreen("loading sailings...");
   
   var sailingsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest//terminalsandmatesbyroute/' +  today + '/' + route.id + '?apiaccesscode=' + API_KEY;
   
@@ -149,7 +173,7 @@ function loadSailingsData(route){
     },
     function(data) {
       // Success!
-      var menuItems = parseSailings(data);
+      var menuItems = parseSailings(data, route);
     
       if (DEBUG){
         console.log('Successfully fetched sailing data!');
@@ -163,6 +187,41 @@ function loadSailingsData(route){
     function(error) {
       // Failure!
       console.log('Failed fetching sailing data: ' + error);
+    }
+  );
+}
+
+
+function loadTimesData(sailing){
+  if (DEBUG){
+    console.log("");
+  }
+  displaySplashScreen("loading times...");
+  
+  var timesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule/' + today + '/' + sailing.route_id  + '?apiaccesscode=' + API_KEY;
+  //make ajax for sailings
+  // Make the request for route data
+  ajax(
+    {
+      url: timesURL,
+      type: 'json'
+    },
+    function(data) {
+      // Success!
+      var menuItems = parseTimes(data, sailing);
+    
+      if (DEBUG){
+        console.log('Successfully fetched times data!');
+        // Check the items are extracted OK
+        for(var i = 0; i < menuItems.length; i++) {
+          console.log(menuItems[i].title);
+        }
+      }
+      displayTimesMenu(menuItems);
+    },
+    function(error) {
+      // Failure!
+      console.log('Failed fetching times data: ' + error);
     }
   );
 }
@@ -184,8 +243,6 @@ function parseRoutes(data){
 
     // Get full route name
     var full_name = data[i].Description;
-    
-    // TODO: check ServiceDisruptions field 
 
     // Add to menu items array
     items.push({
@@ -197,7 +254,7 @@ function parseRoutes(data){
   return items;
 }
 
-function parseSailings(data){
+function parseSailings(data, route){
   
   var items = [];
   for(var i in data) {
@@ -213,10 +270,39 @@ function parseSailings(data){
     items.push({
       title:full_sailing_name,
       depart_id:depart_id,
-      arrive_id:arrive_id
+      arrive_id:arrive_id,
+      route_id:route.id
     });
   }
   return items;
+}
+
+
+function parseTimes(data, sailing){
+  
+  var items = [];
+  for (var i = 0; i < data.TerminalCombos.length; i++) {
+    if (data.TerminalCombos[i].DepartingTerminalID == sailing.depart_id && data.TerminalCombos[i].ArrivingTerminalID == sailing.arrive_id){
+      for (var j = 0; j < data.TerminalCombos[i].Times.length; j++){
+        
+        var title = convertTime(data.TerminalCombos[i].Times[j].DepartingTime);
+                
+        // Add to menu items array
+        items.push({
+          title:title
+        });
+        
+      } 
+    }
+  }
+  return items;
+}
+
+function convertTime(time){
+  
+  var date = new Date(parseInt(time.substring(6, 19)));
+
+  return date.getHours() + ':' + date.getMinutes();
 }
 
 // returns current date in YYYY-MM-DD format.
