@@ -4,3 +4,5 @@ WAFerriesPebble
 
 Pebble App for Washington State Ferries Schedules
 
+##Contribute
+* Learn about contributing under [Contributor Setup](https://github.com/Rogoon/WAFerriesPebble/wiki/Contributor-Setup)
