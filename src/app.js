@@ -6,18 +6,22 @@ var DEBUG = true;
 var UI = require('ui');
 var ajax = require('ajax');
 
-// UI ///////////////////////////////
+// Global UI ///////////////////////////////
 var Vector2 = require('vector2');
 var splashWindow = new UI.Window();
 
 // Loads the splash screen to be displayed while fetching data
-function displaySplashScreen(){
-
+function displaySplashScreen(message){
+  
+  splashWindow.each(function(element) {
+    splashWindow.remove(element);
+  });
+  
   // Text element to inform user
   var text = new UI.Text({
     position: new Vector2(0, 0),
     size: new Vector2(144, 168),
-    text:'Downloading ferry data...',
+    text: message,
     font:'GOTHIC_28_BOLD',
     color:'black',
     textOverflow:'wrap',
@@ -35,7 +39,7 @@ function displayRoutesMenu(data){
   // Construct Menu to show to user
 
   // Add data & style to menu
-  var resultsMenu = new UI.Menu({
+  var routesMenu = new UI.Menu({
     
     backgroundColor: '#1976D2',
     highlightBackgroundColor: '#2196F3',
@@ -47,46 +51,125 @@ function displayRoutesMenu(data){
     }]
   });
   
+  // Add an action for SELECT
+  routesMenu.on('select', function(e) {
+    loadSailingsData(data[e.itemIndex]);
+  });
+  
   // Show the Menu, hide the splash
-  resultsMenu.show();
+  routesMenu.show();
   splashWindow.hide(); 
 }
 
-// Main Logic ////////////////////////////
+function displaySailingsMenu(data){
+  // Construct Menu to show to user
+
+  // Add data & style to menu
+  var routesMenu = new UI.Menu({
+    
+    backgroundColor: '#1976D2',
+    highlightBackgroundColor: '#2196F3',
+    textColor: '#FFFFFF',
+    highlightTextColor: '#FFFFFF',
+    sections: [{
+      title: 'Sailings',
+      items: data
+    }]
+  });
+  
+  // Add an action for SELECT
+  routesMenu.on('select', function(e) {
+    // TODO
+  });
+  
+  // Show the Menu, hide the splash
+  routesMenu.show();
+  splashWindow.hide(); 
+}
+
+// Main ////////////////////////////
 
 // Construct URL
 var today = getToday();
-var API_KEY = 'INSERT_API_KEY_HERE';
-var URL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/routes/' + today + '?apiaccesscode=' + API_KEY;
+var API_KEY = 'INSERT_API_KEY';
 
-displaySplashScreen();
 
-// Make the request
-ajax(
-  {
-    url: URL,
-    type: 'json'
-  },
-  function(data) {
-    // Success!
-    var menuItems = parseRoutes(data);
+loadRoutesData();
+
+// AJAX functions ///////////////////
+// Display splash screen, load ajax, calls menu builder
+
+function loadRoutesData(){
+
+  displaySplashScreen('Downloading ferry data...');
+  
+  var routesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/routes/' + today + '?apiaccesscode=' + API_KEY;
+  // Make the request for route data
+  ajax(
+    {
+      url: routesURL,
+      type: 'json'
+    },
+    function(data) {
+      // Success!
+      var menuItems = parseRoutes(data);
     
-    if (DEBUG){
-      console.log('Successfully fetched ferry data!');
-      // Check the items are extracted OK
-      for(var i = 0; i < menuItems.length; i++) {
-        console.log(menuItems[i].title + ' | ' + menuItems[i].id);
+      if (DEBUG){
+        console.log('Successfully fetched ferry data!');
+        // Check the items are extracted OK
+        for(var i = 0; i < menuItems.length; i++) {
+          console.log(menuItems[i].title + ' | ' + menuItems[i].id);
+        }
       }
+    
+      displayRoutesMenu(menuItems);
+    
+    },
+    function(error) {
+      // Failure!
+      console.log('Failed fetching ferry data: ' + error);
     }
-    
-    displayRoutesMenu(menuItems);
-    
-  },
-  function(error) {
-    // Failure!
-    console.log('Failed fetching ferry data: ' + error);
+  );
+}
+  
+function loadSailingsData(route){
+  if (DEBUG){
+    console.log(route.id);
   }
-);
+  displaySplashScreen("loading data...");
+  
+  var sailingsURL = "";
+  
+  //make ajax for sailings
+  // Make the request for route data
+  ajax(
+    {
+      url: sailingsURL,
+      type: 'json'
+    },
+    function(data) {
+      // Success!
+      var menuItems = parseRoutes(data);
+    
+      if (DEBUG){
+        console.log('Successfully fetched ferry data!');
+        // Check the items are extracted OK
+        for(var i = 0; i < menuItems.length; i++) {
+          console.log(menuItems[i].title + ' | ' + menuItems[i].id);
+        }
+      }
+    
+      displaySailingsMenu(menuItems);
+    
+    },
+    function(error) {
+      // Failure!
+      console.log('Failed fetching ferry data: ' + error);
+    }
+  );
+  
+}
+
 
 // Util Functions //////////////////
 
