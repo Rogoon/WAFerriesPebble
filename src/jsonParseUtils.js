@@ -58,7 +58,8 @@ function parseTimes(data, sailing){
         var title = uitls.convertTime(data.TerminalCombos[i].Times[j].DepartingTime);
         // Add to menu items array
         items.push({
-          title:title
+          title:title,
+          route_name:sailing.full_sailing_name
         });
       } 
     }

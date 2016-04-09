@@ -20,14 +20,14 @@ function pushpin() {
   date.setHours(date.getHours() + 1);
 
   // Create the pin
-  
   var pin = {
     "id": date.getTime().toString(),
     "time": date.toISOString(),
     "layout": {
       "type": "genericPin",
       "title": "Ferry Departure",
-      "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE"
+      "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE",
+      "backgroundColor":'#2196F3'
     }
   };
 
@@ -39,12 +39,12 @@ function pushpin() {
   });
 }
 
-pushpin();
-
 
 // Global UI 
 var Vector2 = require('vector2');
 var splashWindow = new UI.Window();
+
+
 
 /** 
  * Loads the splash screen to be displayed while fetching data.
@@ -141,7 +141,6 @@ function displaySailingsMenu(data){
  * @param data for menu
  */
 function displayTimesMenu(data){
-  // Construct Menu to show to user
 
   // Add data & style to menu
   var timesMenu = new UI.Menu({
@@ -159,6 +158,7 @@ function displayTimesMenu(data){
   // Add an action for SELECT
   timesMenu.on('select', function(e) {
     // TODO: Push to timeline
+    displayActionWindow(data[e.itemIndex]);
   });
   
   // Show the Menu, hide the splash
@@ -166,9 +166,47 @@ function displayTimesMenu(data){
   splashWindow.hide(); 
 }
 
+function displayActionWindow(time){
+  // var route = time.route_name;
+  var actionWindow = new UI.Window({
+    action: {
+      up: "images/action_bar_icon_check",
+      down: "images/action_bar_icon_dismiss",
+      backgroundColor: "white"
+    }
+  });
+  
+  // Text element to inform user
+  var text = new UI.Text({
+    position: new Vector2(0, 0),
+    size: new Vector2(144, 168),
+    text: "Add to timeline?",
+    font:'GOTHIC_28_BOLD',
+    color:'#FFFFFF',
+    textOverflow:'wrap',
+    textAlign:'center',
+    textColor:'#FFFFFF',
+    backgroundColor: '#2196F3'
+  });  
+  
+  actionWindow.on('click', 'up', function() {
+    pushpin();
+    actionWindow.hide();
+  });
+  
+  actionWindow.on('click', 'down', function() {
+    actionWindow.hide();
+  });
+  
+  // Add to splashWindow and show
+  actionWindow.add(text);
+  actionWindow.show();
+  
+}
+
 // Main
 var today = uitls.getToday();
-var API_KEY = 'INSERT_API_KEY_HERE';
+var API_KEY = '';
 var success_bg = '#1976D2';
 var fail_bg = '#b30000';
 
