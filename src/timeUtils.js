@@ -1,5 +1,9 @@
-// Uitl functions
+// Util functions
 
+/**
+ * Parses json feed time for current hour and formats. 
+ * @param time from ferries API JSON feed
+ */
 function convertTime(time){
   
   var date = new Date(parseInt(time.substring(6, 19)));
@@ -29,9 +33,11 @@ function convertTime(time){
   return hours + ':' + mins + ' ' + ampm;
 }
 
-// returns current date in YYYY-MM-DD format.
+/**
+ * Converts current time into YYYY-MM-DD for api call.
+ */
 function getToday(){
-  today = new Date();
+  var today = new Date();
   var dd = today.getDate();
   var mm = today.getMonth() + 1; //January is 0!
   var yyyy = today.getFullYear();
@@ -39,8 +45,6 @@ function getToday(){
   return today;
 }
 
-
-
 // Export
-module.exports.convertTime();
-module.exports.getToday();
+module.exports.convertTime = convertTime;
+module.exports.getToday = getToday;
