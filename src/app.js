@@ -168,8 +168,7 @@ function displaySailingsMenu(data){
  * @param data for menu
  */
 function displayTimesMenu(data){
-
-  // Add data & style to menu
+  
   var timesMenu = new UI.Menu({
     
     backgroundColor: primary,
@@ -182,12 +181,15 @@ function displayTimesMenu(data){
     }]
   });
   
-  // Add an action for SELECT
-  timesMenu.on('select', function(e) {
-    // TODO: Push to timeline
-    displayActionWindow(data[e.itemIndex]);
-  });
+  if (!data[0].empty){
   
+    // Add an action for SELECT
+    timesMenu.on('select', function(e) {
+      displayActionWindow(data[e.itemIndex]);
+    });
+  
+  }
+    
   // Show the Menu, hide the splash
   timesMenu.show();
   splashWindow.hide(); 
