@@ -7,12 +7,19 @@ var DEBUG = true;
 
 var UI = require('ui');
 var ajax = require('ajax');
+var uitls = require('timeUtils');
+var jsonParse = require('jsonParseUtils');
 
-// Global UI ///////////////////////////////
+// Global UI 
 var Vector2 = require('vector2');
 var splashWindow = new UI.Window();
 
-// Loads the splash screen to be displayed while fetching data
+/** 
+ * Loads the splash screen to be displayed while fetching data.
+ * @param message to be displayed on screen.
+ * @param background color of screen.
+ *
+ */
 function displaySplashScreen(message, bg_color){
   
   splashWindow.each(function(element) {
@@ -37,6 +44,10 @@ function displaySplashScreen(message, bg_color){
   splashWindow.show();
 }
 
+/**
+ * Builds a menu item with routes data
+ * @param data for menu
+ */
 function displayRoutesMenu(data){
   // Construct Menu to show to user
 
@@ -63,6 +74,10 @@ function displayRoutesMenu(data){
   splashWindow.hide(); 
 }
 
+/**
+ * Builds a menu item with sailings data
+ * @param data for menu
+ */
 function displaySailingsMenu(data){
   // Construct Menu to show to user
 
@@ -89,6 +104,10 @@ function displaySailingsMenu(data){
   splashWindow.hide(); 
 }
 
+/**
+ * Builds a menu item with times data
+ * @param data for menu
+ */
 function displayTimesMenu(data){
   // Construct Menu to show to user
 
@@ -115,19 +134,18 @@ function displayTimesMenu(data){
   splashWindow.hide(); 
 }
 
-// Main ////////////////////////////
-var today = getToday();
+// Main
+var today = uitls.getToday();
 var API_KEY = 'INSERT_API_KEY_HERE';
 var success_bg = '#1976D2';
 var fail_bg = '#b30000';
 
-
 // Gets this all going
 loadRoutesData();
 
-// AJAX functions ///////////////////
-// Display splash screen, load ajax, calls menu builder
-
+/**
+ * Ajax call for route data.
+ */
 function loadRoutesData(){
 
   displaySplashScreen('Downloading Routes Data...', success_bg);
@@ -141,7 +159,7 @@ function loadRoutesData(){
     },
     function(data) {
       // Success!
-      var menuItems = parseRoutes(data);
+      var menuItems = jsonParse.parseRoutes(data);
     
       if (DEBUG){
         console.log('Successfully fetched routes data!');
@@ -162,6 +180,10 @@ function loadRoutesData(){
   );
 }
   
+/**
+ * Ajax call for sailings data.
+ * @param data for selected route from routes menu.
+ */
 function loadSailingsData(route){
   if (DEBUG){
     console.log(route.id);
@@ -170,8 +192,6 @@ function loadSailingsData(route){
   
   var sailingsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest//terminalsandmatesbyroute/' +  today + '/' + route.id + '?apiaccesscode=' + API_KEY;
   
-  //make ajax for sailings
-  // Make the request for route data
   ajax(
     {
       url: sailingsURL,
@@ -179,7 +199,7 @@ function loadSailingsData(route){
     },
     function(data) {
       // Success!
-      var menuItems = parseSailings(data, route);
+      var menuItems = jsonParse.parseSailings(data, route);
     
       if (DEBUG){
         console.log('Successfully fetched sailing data!');
@@ -198,6 +218,10 @@ function loadSailingsData(route){
   );
 }
 
+/**
+ * Ajax call for times data.
+ * @param data for selected sailing from sailings menu.
+ */
 function loadTimesData(sailing){
   if (DEBUG){
     console.log("");
@@ -205,8 +229,7 @@ function loadTimesData(sailing){
   displaySplashScreen("Downloading Times Data...", success_bg);
   
   var timesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule/' + today + '/' + sailing.route_id  + '?apiaccesscode=' + API_KEY;
-  //make ajax for sailings
-  // Make the request for route data
+
   ajax(
     {
       url: timesURL,
@@ -214,7 +237,7 @@ function loadTimesData(sailing){
     },
     function(data) {
       // Success!
-      var menuItems = parseTimes(data, sailing);
+      var menuItems = jsonParse.parseTimes(data, sailing);
     
       if (DEBUG){
         console.log('Successfully fetched times data!');
@@ -231,114 +254,4 @@ function loadTimesData(sailing){
       console.log('Failed fetching times data: ' + error);
     }
   );
-}
-
-// Util Functions //////////////////
-// Returns a list of route names
-function parseRoutes(data){
-  
-  var items = [];
-  for(var i in data) {
-    
-    // Get Route ID
-    var id = data[i].RouteID;
-    
-    // Get abbrev route name
-    var abbrev_name = data[i].RouteAbbrev;
-    abbrev_name = abbrev_name.toUpperCase();
-
-    // Get full route name
-    var full_name = data[i].Description;
-
-    // Add to menu items array
-    items.push({
-      title:abbrev_name,
-      subtitle:full_name,
-      id:id
-    });
-  }
-  return items;
-}
-
-function parseSailings(data, route){
-  
-  var items = [];
-  for(var i in data) {
-    
-    // Get Route ID
-    var depart_id = data[i].DepartingTerminalID;
-    var arrive_id = data[i].ArrivingTerminalID;
-    
-    // Get sailing name
-    var full_sailing_name = data[i].DepartingDescription.substring(0, 6) + ' / ' + data[i].ArrivingDescription.substring(0, 6);
-   
-    // Add to menu items array
-    items.push({
-      title:full_sailing_name,
-      depart_id:depart_id,
-      arrive_id:arrive_id,
-      route_id:route.id
-    });
-  }
-  return items;
-}
-
-
-function parseTimes(data, sailing){
-  
-  var items = [];
-  for (var i = 0; i < data.TerminalCombos.length; i++) {
-    if (data.TerminalCombos[i].DepartingTerminalID == sailing.depart_id && data.TerminalCombos[i].ArrivingTerminalID == sailing.arrive_id){
-      for (var j = 0; j < data.TerminalCombos[i].Times.length; j++){
-        
-        var title = convertTime(data.TerminalCombos[i].Times[j].DepartingTime);
-                
-        // Add to menu items array
-        items.push({
-          title:title
-        });
-        
-      } 
-    }
-  }
-  return items;
-}
-
-function convertTime(time){
-  
-  var date = new Date(parseInt(time.substring(6, 19)));
-
-  var hours = parseInt(date.getHours());
-  var mins = parseInt(date.getMinutes());
-  var ampm = 'am';
-  
-  switch(hours){
-    case 0:
-      hours = 12;
-      break;
-    case 12:
-      ampm = 'pm';
-      break;
-    default:
-      if (parseInt(date.getHours()) > 12){
-        hours = hours - 12;
-        ampm = 'pm';
-      }
-  }
-  
-  if(mins < 10){
-    mins = mins + '0';
-  }
-  
-  return hours + ':' + mins + ' ' + ampm;
-}
-
-// returns current date in YYYY-MM-DD format.
-function getToday(){
-  today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1; //January is 0!
-  var yyyy = today.getFullYear();
-  today = yyyy + '-' + mm + '-' + dd;
-  return today;
 }
