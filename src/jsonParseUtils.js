@@ -55,15 +55,29 @@ function parseTimes(data, sailing){
   for (var i = 0; i < data.TerminalCombos.length; i++) {
     if (data.TerminalCombos[i].DepartingTerminalID == sailing.depart_id && data.TerminalCombos[i].ArrivingTerminalID == sailing.arrive_id){
       for (var j = 0; j < data.TerminalCombos[i].Times.length; j++){
-        var title = uitls.convertTime(data.TerminalCombos[i].Times[j].DepartingTime);
-        // Add to menu items array
-        items.push({
-          title:title,
-          route_name:sailing.full_sailing_name
-        });
+        var now = new Date();
+        var depart = new Date(parseInt(data.TerminalCombos[i].Times[j].DepartingTime.substring(6,19)));
+        // Only add future s~ailings
+        if (now.getTime() < depart.getTime()){
+          var title = uitls.convertTime(data.TerminalCombos[i].Times[j].DepartingTime);
+          // Add to menu items array
+          items.push({
+            title:title,
+            route_name:sailing.full_sailing_name,
+            empty: false
+          });
+        }
       } 
     }
   }
+  
+  if (items.length < 1){
+      items.push({
+        title:"No sailings today",
+        empty: true
+      });
+  }
+  
   return items;
 }
 
