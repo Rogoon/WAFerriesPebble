@@ -9,9 +9,23 @@ var UI = require('ui');
 var ajax = require('ajax');
 var uitls = require('timeUtils');
 var jsonParse = require('jsonParseUtils');
-
-
 var timeline = require('timeline');
+
+// Global UI 
+var Vector2 = require('vector2');
+var splashWindow = new UI.Window();
+
+// Global values
+var today = uitls.getToday();
+var API_KEY = '';
+var fail_bg = '#b30000';
+
+var primary = '#1976D2';
+var secondary = '#2196F3';
+var accent = "#00b300";
+
+// Gets this all going
+loadRoutesData();
 
 // Push a pin when the app starts
 function pushpin() {
@@ -27,7 +41,7 @@ function pushpin() {
       "type": "genericPin",
       "title": "Ferry Departure",
       "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE",
-      "backgroundColor":'#2196F3'
+      "backgroundColor":secondary
     }
   };
 
@@ -38,12 +52,6 @@ function pushpin() {
     console.log('Result: ' + responseText);
   });
 }
-
-
-// Global UI 
-var Vector2 = require('vector2');
-var splashWindow = new UI.Window();
-
 
 
 /** 
@@ -76,6 +84,25 @@ function displaySplashScreen(message, bg_color){
   splashWindow.show();
 }
 
+/** 
+ * Loads a success screen
+ * @param message to be displayed on screen.
+ */
+function displaySuccessScreen(message){
+  
+  var successCard = new UI.Card({
+    title: "\n" + message,
+    backgroundColor: accent,
+    textAlign:'center',
+    titleColor: '#FFFFFF'
+  });
+
+  successCard.show();  
+  setTimeout(function () {
+      successCard.hide();
+    }, 2000);
+}
+
 /**
  * Builds a menu item with routes data
  * @param data for menu
@@ -86,8 +113,8 @@ function displayRoutesMenu(data){
   // Add data & style to menu
   var routesMenu = new UI.Menu({
     
-    backgroundColor: '#1976D2',
-    highlightBackgroundColor: '#2196F3',
+    backgroundColor: primary,
+    highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
     highlightTextColor: '#FFFFFF',
     sections: [{
@@ -116,8 +143,8 @@ function displaySailingsMenu(data){
   // Add data & style to menu
   var sailingsMenu = new UI.Menu({
     
-    backgroundColor: '#1976D2',
-    highlightBackgroundColor: '#2196F3',
+    backgroundColor: primary,
+    highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
     highlightTextColor: '#FFFFFF',
     sections: [{
@@ -145,8 +172,8 @@ function displayTimesMenu(data){
   // Add data & style to menu
   var timesMenu = new UI.Menu({
     
-    backgroundColor: '#1976D2',
-    highlightBackgroundColor: '#2196F3',
+    backgroundColor: primary,
+    highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
     highlightTextColor: '#FFFFFF',
     sections: [{
@@ -167,61 +194,38 @@ function displayTimesMenu(data){
 }
 
 function displayActionWindow(time){
-  // var route = time.route_name;
-  var actionWindow = new UI.Window({
+  
+  var actionCard = new UI.Card({
     action: {
       up: "images/action_bar_icon_check",
       down: "images/action_bar_icon_dismiss",
-      backgroundColor: "white"
-    }
+      backgroundColor: secondary
+    },
+    title: "Add\n" + time.title + " departure to timeline?",
+    backgroundColor: primary,
+    titleColor: "#FFFFFF"
+    
   });
+
   
-  // Text element to inform user
-  var text = new UI.Text({
-    position: new Vector2(0, 0),
-    size: new Vector2(144, 168),
-    text: "Add to timeline?",
-    font:'GOTHIC_28_BOLD',
-    color:'#FFFFFF',
-    textOverflow:'wrap',
-    textAlign:'center',
-    textColor:'#FFFFFF',
-    backgroundColor: '#2196F3'
-  });  
-  
-  actionWindow.on('click', 'up', function() {
+  actionCard.on('click', 'up', function() {
     pushpin();
-    actionWindow.hide();
+    displaySuccessScreen("Added to timeline!");
+    actionCard.hide();
   });
   
-  actionWindow.on('click', 'down', function() {
-    actionWindow.hide();
+  actionCard.on('click', 'down', function() {
+    actionCard.hide();
   });
-  
-  // Add to splashWindow and show
-  actionWindow.add(text);
-  actionWindow.show();
-  
+  actionCard.show();  
 }
-
-// Main
-var today = uitls.getToday();
-var API_KEY = '';
-var success_bg = '#1976D2';
-var fail_bg = '#b30000';
-
-
-
-
-// Gets this all going
-loadRoutesData();
 
 /**
  * Ajax call for route data.
  */
 function loadRoutesData(){
 
-  displaySplashScreen('Downloading Routes Data...', success_bg);
+  displaySplashScreen('Downloading Routes Data...', primary);
   
   var routesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/routes/' + today + '?apiaccesscode=' + API_KEY;
   // Make the request for route data
@@ -261,7 +265,7 @@ function loadSailingsData(route){
   if (DEBUG){
     console.log(route.id);
   }
-  displaySplashScreen("Downloading Sailings Data...", success_bg);
+  displaySplashScreen("Downloading Sailings Data...", primary);
   
   var sailingsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest//terminalsandmatesbyroute/' +  today + '/' + route.id + '?apiaccesscode=' + API_KEY;
   
@@ -299,7 +303,7 @@ function loadTimesData(sailing){
   if (DEBUG){
     console.log("");
   }
-  displaySplashScreen("Downloading Times Data...", success_bg);
+  displaySplashScreen("Downloading Times Data...", primary);
   
   var timesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule/' + today + '/' + sailing.route_id  + '?apiaccesscode=' + API_KEY;
 
