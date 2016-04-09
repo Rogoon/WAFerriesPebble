@@ -4,6 +4,10 @@ Version number takes the format major.minor
 
 [Unreleased]:
 
+[0.4] 
+
+Added push pin support.
+
 Added Failed to load screen.
 
 [0.3] : Added Departure times Menu
