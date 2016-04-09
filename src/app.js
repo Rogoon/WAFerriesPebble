@@ -13,7 +13,7 @@ var Vector2 = require('vector2');
 var splashWindow = new UI.Window();
 
 // Loads the splash screen to be displayed while fetching data
-function displaySplashScreen(message){
+function displaySplashScreen(message, bg_color){
   
   splashWindow.each(function(element) {
     splashWindow.remove(element);
@@ -29,9 +29,9 @@ function displaySplashScreen(message){
     textOverflow:'wrap',
     textAlign:'center',
     textColor:'#FFFFFF',
-    backgroundColor:'#1976D2'
+    backgroundColor: bg_color
   });
-
+  
   // Add to splashWindow and show
   splashWindow.add(text);
   splashWindow.show();
@@ -118,6 +118,9 @@ function displayTimesMenu(data){
 // Main ////////////////////////////
 var today = getToday();
 var API_KEY = 'INSERT_API_KEY_HERE';
+var success_bg = '#1976D2';
+var fail_bg = '#b30000';
+
 
 // Gets this all going
 loadRoutesData();
@@ -127,7 +130,7 @@ loadRoutesData();
 
 function loadRoutesData(){
 
-  displaySplashScreen('Downloading Routes Data...');
+  displaySplashScreen('Downloading Routes Data...', success_bg);
   
   var routesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/routes/' + today + '?apiaccesscode=' + API_KEY;
   // Make the request for route data
@@ -153,6 +156,7 @@ function loadRoutesData(){
     },
     function(error) {
       // Failure!
+      displaySplashScreen('Failed to load data.', fail_bg);
       console.log('Failed fetching routes data: ' + error);
     }
   );
@@ -162,7 +166,7 @@ function loadSailingsData(route){
   if (DEBUG){
     console.log(route.id);
   }
-  displaySplashScreen("Downloading Sailings Data...");
+  displaySplashScreen("Downloading Sailings Data...", success_bg);
   
   var sailingsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest//terminalsandmatesbyroute/' +  today + '/' + route.id + '?apiaccesscode=' + API_KEY;
   
@@ -188,6 +192,7 @@ function loadSailingsData(route){
     },
     function(error) {
       // Failure!
+      displaySplashScreen('Failed to load data.', fail_bg);
       console.log('Failed fetching sailing data: ' + error);
     }
   );
@@ -197,7 +202,7 @@ function loadTimesData(sailing){
   if (DEBUG){
     console.log("");
   }
-  displaySplashScreen("Downloading Times Data...");
+  displaySplashScreen("Downloading Times Data...", success_bg);
   
   var timesURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule/' + today + '/' + sailing.route_id  + '?apiaccesscode=' + API_KEY;
   //make ajax for sailings
@@ -222,6 +227,7 @@ function loadTimesData(sailing){
     },
     function(error) {
       // Failure!
+      displaySplashScreen('Failed to load data.', fail_bg);
       console.log('Failed fetching times data: ' + error);
     }
   );
