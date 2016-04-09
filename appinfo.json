@@ -6,6 +6,7 @@
     "companyName": "Rogoon",
     "longName": "WA Ferries",
     "projectType": "pebblejs",
+    "enableMultiJS": true,
     "resources": {
         "media": [
             {
