@@ -10,6 +10,38 @@ var ajax = require('ajax');
 var uitls = require('timeUtils');
 var jsonParse = require('jsonParseUtils');
 
+
+var timeline = require('timeline');
+
+// Push a pin when the app starts
+function pushpin() {
+  // An hour ahead
+  var date = new Date();
+  date.setHours(date.getHours() + 1);
+
+  // Create the pin
+  
+  var pin = {
+    "id": date.getTime().toString(),
+    "time": date.toISOString(),
+    "layout": {
+      "type": "genericPin",
+      "title": "Ferry Departure",
+      "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE"
+    }
+  };
+
+  console.log('Inserting pin in the future: ' + JSON.stringify(pin));
+
+  // Push the pin
+  timeline.insertUserPin(pin, function(responseText) {
+    console.log('Result: ' + responseText);
+  });
+}
+
+pushpin();
+
+
 // Global UI 
 var Vector2 = require('vector2');
 var splashWindow = new UI.Window();
@@ -139,6 +171,9 @@ var today = uitls.getToday();
 var API_KEY = 'INSERT_API_KEY_HERE';
 var success_bg = '#1976D2';
 var fail_bg = '#b30000';
+
+
+
 
 // Gets this all going
 loadRoutesData();
