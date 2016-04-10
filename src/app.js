@@ -28,7 +28,7 @@ var accent = "#00b300";
 loadRoutesData();
 
 // Push a pin when the app starts
-function pushpin() {
+function pushpin(time) {
   // An hour ahead
   var date = new Date();
   date.setHours(date.getHours() + 1);
@@ -36,10 +36,11 @@ function pushpin() {
   // Create the pin
   var pin = {
     "id": date.getTime().toString(),
-    "time": date.toISOString(),
+    "time": time.time.toISOString(),
     "layout": {
       "type": "genericPin",
-      "title": "Ferry Departure",
+      "title": time.route_name,
+      "subtitle": "Ferry Departure",
       "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE",
       "backgroundColor":secondary
     }
@@ -208,10 +209,9 @@ function displayActionWindow(time){
     titleColor: "#FFFFFF"
     
   });
-
   
   actionCard.on('click', 'up', function() {
-    pushpin();
+    pushpin(time);
     displaySuccessScreen("Added to timeline!");
     actionCard.hide();
   });

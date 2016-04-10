@@ -37,11 +37,11 @@ function parseSailings(data, route){
     var arrive_id = data[i].ArrivingTerminalID;
     
     // Get sailing name
-    var full_sailing_name = data[i].DepartingDescription.substring(0, 6) + ' / ' + data[i].ArrivingDescription.substring(0, 6);
+    var sailing_name = data[i].DepartingDescription.substring(0, 6) + ' / ' + data[i].ArrivingDescription.substring(0, 6);
    
     // Add to menu items array
     items.push({
-      title:full_sailing_name,
+      title:sailing_name,
       depart_id:depart_id,
       arrive_id:arrive_id,
       route_id:route.id
@@ -63,7 +63,8 @@ function parseTimes(data, sailing){
           // Add to menu items array
           items.push({
             title:title,
-            route_name:sailing.full_sailing_name,
+            route_name:sailing.title,
+            time: new Date(parseInt(data.TerminalCombos[i].Times[j].DepartingTime.substring(6,19))),
             empty: false
           });
         }
