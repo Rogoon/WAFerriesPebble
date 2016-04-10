@@ -30,6 +30,11 @@
                 "type": "font"
             },
             {
+                "file": "images/warning",
+                "name": "IMAGES_WARNING",
+                "type": "bitmap"
+            },
+            {
                 "file": "images/action_bar_icon_dismiss",
                 "name": "IMAGES_ACTION_BAR_ICON_DISMISS",
                 "type": "bitmap"

@@ -199,10 +199,11 @@ function displayTimesMenu(data){
 function displayActionWindow(time){
   
   var actionCard = new UI.Card({
+    
     action: {
       up: "images/action_bar_icon_check",
       down: "images/action_bar_icon_dismiss",
-      backgroundColor: secondary
+      backgroundColor: "black"
     },
     title: "Add\n" + time.title + " departure to timeline?",
     backgroundColor: primary,
