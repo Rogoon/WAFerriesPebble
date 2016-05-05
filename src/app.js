@@ -20,14 +20,6 @@ var splashWindow = new UI.Window();
 var today = uitls.getToday();
 var tomorrow = uitls.getTomorrow();
 
-/**This is a bunch of junk that didn't work
-  *It was all as easy as just making a funciont WHO KNEW.
-  *
-  *var tomorrow = uitls.getToday().tomorrow.setDate(today.getDate() + 1);
-  *var tomorrow = new Date();
-  *tomorrow.setDate(tomorrow.getDate() + 1);
-  */
-
 var fail_bg = '#b30000';
 
 var primary = '#1976D2';
