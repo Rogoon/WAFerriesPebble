@@ -28,7 +28,6 @@ var tomorrow = uitls.getTomorrow();
   *tomorrow.setDate(tomorrow.getDate() + 1);
   */
 
-var API_KEY = '27615675-746c-4ce2-8b18-9278fa886fb8';
 var fail_bg = '#b30000';
 
 var primary = '#1976D2';

@@ -44,7 +44,7 @@ function getToday(){
   today = yyyy + '-' + mm + '-' + dd;
   return today;
 }
-/*Function for tomorrow*/
+
 function getTomorrow(){
   var tomorrow = new Date();
   var dd = tomorrow.getDate() + 1;
