@@ -45,6 +45,16 @@ function getToday(){
   return today;
 }
 
+function getTomorrow(){
+  var tomorrow = new Date();
+  var dd = tomorrow.getDate() + 1;
+  var mm = tomorrow.getMonth() + 1;
+  var yyyy = tomorrow.getFullYear();
+  tomorrow = yyyy + '-' + mm + '-' + dd;
+  return tomorrow;
+}
+
 // Export
 module.exports.convertTime = convertTime;
 module.exports.getToday = getToday;
+module.exports.getTomorrow = getTomorrow;
