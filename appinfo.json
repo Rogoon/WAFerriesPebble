@@ -50,7 +50,8 @@
     "shortName": "WA Ferries",
     "targetPlatforms": [
         "aplite",
-        "basalt"
+        "basalt",
+        "chalk"
     ],
     "uuid": "68469080-902b-4aac-81d6-ff705f207ed5",
     "versionCode": 1,

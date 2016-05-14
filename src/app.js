@@ -6,6 +6,8 @@
  */
 var DEBUG = true;
 
+var API_KEY = '';
+
 var UI = require('ui');
 var ajax = require('ajax');
 var uitls = require('timeUtils');
@@ -13,8 +15,7 @@ var jsonParse = require('jsonParseUtils');
 var timeline = require('timeline');
 
 // Global UI 
-var Vector2 = require('vector2');
-var splashWindow = new UI.Window();
+var splashCard = new UI.Card();
 
 // Global values
 var today = uitls.getToday();
@@ -65,26 +66,15 @@ function pushpin(time) {
  */
 function displaySplashScreen(message, bg_color){
   
-  splashWindow.each(function(element) {
-    splashWindow.remove(element);
-  });
-  
   // Text element to inform user
-  var text = new UI.Text({
-    position: new Vector2(0, 0),
-    size: new Vector2(144, 168),
-    text: message,
-    font:'GOTHIC_28_BOLD',
-    color:'#FFFFFF',
-    textOverflow:'wrap',
+  splashCard = new UI.Card({
+    title: message,
+    titleColor:'#FFFFFF',
     textAlign:'center',
-    textColor:'#FFFFFF',
     backgroundColor: bg_color
   });
   
-  // Add to splashWindow and show
-  splashWindow.add(text);
-  splashWindow.show();
+  splashCard.show();
 }
 
 /** 
@@ -133,7 +123,7 @@ function displayRoutesMenu(data){
   
   // Show the Menu, hide the splash
   routesMenu.show();
-  splashWindow.hide(); 
+  splashCard.hide(); 
 }
 
 /**
@@ -179,7 +169,7 @@ function displayDaysMenu(data){
   
   // Show the Menu, hide the splash
   daysMenu.show();
-  splashWindow.hide(); 
+  splashCard.hide(); 
 }
 
 /**
@@ -209,7 +199,7 @@ function displaySailingsMenu(data){
   
   // Show the Menu, hide the splash
   sailingsMenu.show();
-  splashWindow.hide(); 
+  splashCard.hide(); 
 }
 
 /**
@@ -241,7 +231,7 @@ function displayTimesMenu(data){
     
   // Show the Menu, hide the splash
   timesMenu.show();
-  splashWindow.hide(); 
+  splashCard.hide(); 
 }
 
 function displayActionWindow(time){
