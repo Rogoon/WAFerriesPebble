@@ -9,6 +9,7 @@ var DEBUG = true;
 var API_KEY = '';
 
 var UI = require('ui');
+//var Feature = require('platform/feature');
 var ajax = require('ajax');
 var uitls = require('timeUtils');
 var jsonParse = require('jsonParseUtils');
@@ -68,6 +69,9 @@ function displaySplashScreen(message, bg_color){
   
   // Text element to inform user
   splashCard = new UI.Card({
+    status: {
+      separator: 'none',
+    },
     title: message,
     titleColor:'#FFFFFF',
     textAlign:'center',
@@ -78,12 +82,15 @@ function displaySplashScreen(message, bg_color){
 }
 
 /** 
- * Loads a success screen
+ * displays a success screen for 2 seconds
  * @param message to be displayed on screen.
  */
 function displaySuccessScreen(message){
   
   var successCard = new UI.Card({
+    status: {
+      separator: 'none',
+    },
     title: "\n" + message,
     backgroundColor: accent,
     textAlign:'center',
@@ -105,7 +112,9 @@ function displayRoutesMenu(data){
 
   // Add data & style to menu
   var routesMenu = new UI.Menu({
-    
+    status: {
+      separator: 'none',
+    },
     backgroundColor: primary,
     highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
@@ -130,8 +139,6 @@ function displayRoutesMenu(data){
  * Builds a menu for selecting day
  */
 function displayDaysMenu(data){
-  // Construct Menu to show to user
-
   //create menu items
   var items = [];
   items.push({
@@ -143,7 +150,9 @@ function displayDaysMenu(data){
   
   // Add data & style to menu
   var daysMenu = new UI.Menu({
-    
+    status: {
+      separator: 'none',
+    },
     backgroundColor: primary,
     highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
@@ -181,7 +190,9 @@ function displaySailingsMenu(data){
 
   // Add data & style to menu
   var sailingsMenu = new UI.Menu({
-    
+    status: {
+      separator: 'none',
+    },
     backgroundColor: primary,
     highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
@@ -209,7 +220,9 @@ function displaySailingsMenu(data){
 function displayTimesMenu(data){
   
   var timesMenu = new UI.Menu({
-    
+    status: {
+      separator: 'none',
+    },
     backgroundColor: primary,
     highlightBackgroundColor: secondary,
     textColor: '#FFFFFF',
@@ -237,7 +250,9 @@ function displayTimesMenu(data){
 function displayActionWindow(time){
   
   var actionCard = new UI.Card({
-    
+    status: {
+      separator: 'none',
+    },
     action: {
       up: "images/action_bar_icon_check",
       down: "images/action_bar_icon_dismiss",
@@ -286,9 +301,7 @@ function loadRoutesData(){
           console.log(menuItems[i].title + ' | ' + menuItems[i].id);
         }
       }
-    
       displayRoutesMenu(menuItems);
-    
     },
     function(error) {
       // Failure!
