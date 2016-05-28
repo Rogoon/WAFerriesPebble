@@ -192,7 +192,7 @@ function displayDaysMenu(data){
         loadTimesData(data, true);
         break;
       case 1:
-        loadTimesData(data, true);
+        loadTimesData(data, false);
         break;
       case 2:
         loadAlerts(data);

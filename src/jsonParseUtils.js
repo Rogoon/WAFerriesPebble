@@ -71,6 +71,13 @@ function parseTimes(data, sailing){
       } 
     }
   }
+  if (items.length < 1){
+      items.push({
+        title:"No sailings today",
+        empty: true
+      });
+  }
+  return items;
 }
   
 function parseAlerts(data, sailing){  
