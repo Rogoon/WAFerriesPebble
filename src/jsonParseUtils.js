@@ -71,19 +71,25 @@ function parseTimes(data, sailing){
       } 
     }
   }
+}
   
-  if (items.length < 1){
-      items.push({
-        title:"No sailings today",
-        empty: true
-      });
+function parseAlerts(data, sailing){  
+  var items = [];
+  for (var i = 0; i < data.Alerts.length; i++) {
+    items.push({
+      title: data.Alerts[i].AlertFullTitle,
+      subtitle: data.Alerts[i].AlertFullText
+    });
   }
-  
+  if (data.Alerts.length === 0){
+    items.push({
+      title: "No Active Alerts"
+    });
+  }
   return items;
 }
 
 module.exports.parseRoutes = parseRoutes;
 module.exports.parseSailings = parseSailings;
 module.exports.parseTimes = parseTimes;
-
-
+module.exports.parseAlerts = parseAlerts;

@@ -17,6 +17,7 @@ var timeline = require('timeline');
 
 // Global UI 
 var splashCard = new UI.Card();
+var textCard = new UI.Card();
 
 // Global values
 var today = uitls.getToday();
@@ -63,7 +64,6 @@ function pushpin(time) {
  * Loads the splash screen to be displayed while fetching data.
  * @param message to be displayed on screen.
  * @param background color of screen.
- *
  */
 function displaySplashScreen(message, bg_color){
   
@@ -79,6 +79,23 @@ function displaySplashScreen(message, bg_color){
   });
   
   splashCard.show();
+}
+
+function displayTextScreen(message, bg_color){
+  
+  // Text element to inform user
+  textCard = new UI.Card({
+    status: {
+      separator: 'none',
+    },
+    scrollable: true,
+    body: message,
+    bodyColor:'#FFFFFF',
+    textAlign:'center',
+    backgroundColor: bg_color
+  });
+  
+  textCard.show();
 }
 
 /** 
@@ -141,11 +158,15 @@ function displayRoutesMenu(data){
 function displayDaysMenu(data){
   //create menu items
   var items = [];
+  
   items.push({
     title:"Today"
   });
   items.push({
     title:"Tomorrow"
+  });
+  items.push({
+    title:"Check For Alerts"
   });
   
   // Add data & style to menu
@@ -171,7 +192,10 @@ function displayDaysMenu(data){
         loadTimesData(data, true);
         break;
       case 1:
-        loadTimesData(data, false);
+        loadTimesData(data, true);
+        break;
+      case 2:
+        loadAlerts(data);
         break;
     }
   });
@@ -204,7 +228,7 @@ function displaySailingsMenu(data){
   });
   
   // Add an action for SELECT
-  sailingsMenu.on('select', function(e) {
+  sailingsMenu.on('select', function(e) {  
     displayDaysMenu(data[e.itemIndex]);
   });
   
@@ -234,17 +258,41 @@ function displayTimesMenu(data){
   });
   
   if (!data[0].empty){
-  
     // Add an action for SELECT
     timesMenu.on('select', function(e) {
       displayActionWindow(data[e.itemIndex]);
     });
-  
   }
     
   // Show the Menu, hide the splash
   timesMenu.show();
   splashCard.hide(); 
+}
+
+function displayAlertsMenu(alerts){
+  
+  var alertsMenu = new UI.Menu({
+    status: {
+      separator: 'none',
+    },
+    backgroundColor: primary,
+    highlightBackgroundColor: secondary,
+    textColor: '#FFFFFF',
+    highlightTextColor: '#FFFFFF',
+    sections: [{
+      title: 'Alerts',
+      items: alerts
+    }],
+  });
+  
+  // Add an action for SELECT
+  alertsMenu.on('select', function(e) {
+      displayTextScreen(alerts[e.itemIndex].subtitle, primary);
+  });
+  
+  // Show the Menu, hide the splash
+  alertsMenu.show();
+  splashCard.hide();
 }
 
 function displayActionWindow(time){
@@ -354,9 +402,7 @@ function loadSailingsData(route){
  * @param data for selected sailing from sailings menu.
  */
 function loadTimesData(sailing, selectToday){
-  if (DEBUG){
-    console.log("");
-  }
+
   displaySplashScreen("Downloading Times Data...", primary);
   
   var timesURL = "";
@@ -390,4 +436,38 @@ function loadTimesData(sailing, selectToday){
       console.log('Failed fetching times data: ' + error);
     }
   );
+}
+
+function loadAlerts(sailing){
+  
+  displaySplashScreen("Checking for Alerts...", primary);
+  var alertsURL = "";
+  alertsURL = 'http://www.wsdot.wa.gov/ferries/api/schedule/rest/routedetails/' + today + '/' + sailing.route_id + '?apiaccesscode=' + API_KEY;
+
+  ajax(
+    {
+      url: alertsURL,
+      type: 'json'
+    },
+    function(data) {
+      // Success!
+      var menuItems = jsonParse.parseAlerts(data, sailing);
+    
+      if (DEBUG){
+        console.log('Successfully fetched times data!');
+        // Check the items are extracted OK
+        for(var i = 0; i < menuItems.length; i++) {
+          console.log(menuItems[i].title);
+        }
+      }
+      if (DEBUG){
+        console.log(menuItems);
+      }
+      displayAlertsMenu(menuItems);
+    },
+    function(error) {
+      // Failure!
+      displaySplashScreen('Failed to load data.', fail_bg);
+      console.log('Failed fetching times data: ' + error);
+    });
 }
