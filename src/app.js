@@ -89,7 +89,7 @@ function displayTextScreen(message, bg_color){
       separator: 'none',
     },
     scrollable: true,
-    body: message,
+    body: message.replace(/<(?:.|\n)*?>/gm, ''), // TH̘Ë͖́̉ ͠P̯͍̭O̚​N̐Y̡ H̸̡̪̯ͨ͊̽̅̾̎Ȩ̬̩̾͛ͪ̈́̀́͘ ̶̧̨̱̹̭̯ͧ̾ͬC̷̙̲̝͖ͭ̏ͥͮ͟Oͮ͏̮̪̝͍M̲̖͊̒ͪͩͬ̚̚͜Ȇ̴̟̟͙̞ͩ͌͝S̨̥̫͎̭ͯ̿̔̀ͅ
     bodyColor:'#FFFFFF',
     textAlign:'center',
     backgroundColor: bg_color
