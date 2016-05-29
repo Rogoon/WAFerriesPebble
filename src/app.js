@@ -4,12 +4,13 @@
  * Author: Rogoon
  *         simnic31
  */
-var DEBUG = true;
+var DEBUG = false;
 
 var API_KEY = '';
 
 var UI = require('ui');
 var Feature = require('platform/feature');
+//var Feature = require('platform/feature');
 var ajax = require('ajax');
 var uitls = require('timeUtils');
 var jsonParse = require('jsonParseUtils');
@@ -47,15 +48,17 @@ function pushpin(time) {
       "title": time.route_name,
       "subtitle": "Ferry Departure",
       "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE",
-      "backgroundColor":Feature.color(secondary, 'white'),
+      "backgroundColor":Feature.color(secondary, 'white')
     }
   };
-
-  console.log('Inserting pin in the future: ' + JSON.stringify(pin));
-
+  if (DEBUG){
+    console.log('Inserting pin in the future: ' + JSON.stringify(pin));
+  }
   // Push the pin
   timeline.insertUserPin(pin, function(responseText) {
-    console.log('Result: ' + responseText);
+    if (DEBUG){
+      console.log('Result: ' + responseText);
+    }
   });
 }
 
@@ -75,7 +78,7 @@ function displaySplashScreen(message, bg_color){
     title: message,
     titleColor:'#FFFFFF',
     textAlign:'center',
-    backgroundColor: bg_color
+    backgroundColor: Feature.color(bg_color, 'black')
   });
   
   splashCard.show();
@@ -90,9 +93,9 @@ function displayTextScreen(message, bg_color){
     },
     scrollable: true,
     body: message.replace(/<(?:.|\n)*?>/gm, ''), // TH̘Ë͖́̉ ͠P̯͍̭O̚​N̐Y̡ H̸̡̪̯ͨ͊̽̅̾̎Ȩ̬̩̾͛ͪ̈́̀́͘ ̶̧̨̱̹̭̯ͧ̾ͬC̷̙̲̝͖ͭ̏ͥͮ͟Oͮ͏̮̪̝͍M̲̖͊̒ͪͩͬ̚̚͜Ȇ̴̟̟͙̞ͩ͌͝S̨̥̫͎̭ͯ̿̔̀ͅ
-    bodyColor:'#FFFFFF',
+    bodyColor: Feature.color('#FFFFFF', 'black'),
     textAlign:'center',
-    backgroundColor: bg_color
+    backgroundColor: Feature.color(bg_color, 'white')
   });
   
   textCard.show();
@@ -109,9 +112,9 @@ function displaySuccessScreen(message){
       separator: 'none',
     },
     title: "\n" + message,
-    backgroundColor: Feature.color(accent, 'black'),
+    backgroundColor: Feature.color(accent, '#FFFFFF'),
     textAlign:'center',
-    titleColor: '#FFFFFF'
+    titleColor: Feature.color('#FFFFFF','black')
   });
 
   successCard.show();  
@@ -132,10 +135,9 @@ function displayRoutesMenu(data){
     status: {
       separator: 'none',
     },
-
     backgroundColor: Feature.color(primary, 'black'),
     highlightBackgroundColor: Feature.color(secondary, 'white'),
-    textColor: '#FFFFFF',
+    textColor: '#FFFFFF', 
     highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Routes',
@@ -175,10 +177,9 @@ function displayDaysMenu(data){
     status: {
       separator: 'none',
     },
-
     backgroundColor: Feature.color(primary, 'black'),
     highlightBackgroundColor: Feature.color(secondary, 'white'),
-    textColor: '#FFFFFF',
+    textColor: '#FFFFFF', 
     highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Departure Day',
@@ -219,10 +220,9 @@ function displaySailingsMenu(data){
     status: {
       separator: 'none',
     },
-
     backgroundColor: Feature.color(primary, 'black'),
     highlightBackgroundColor: Feature.color(secondary, 'white'),
-    textColor: '#FFFFFF',
+    textColor: '#FFFFFF', 
     highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Sailings',
@@ -250,10 +250,9 @@ function displayTimesMenu(data){
     status: {
       separator: 'none',
     },
-
     backgroundColor: Feature.color(primary, 'black'),
     highlightBackgroundColor: Feature.color(secondary, 'white'),
-    textColor: '#FFFFFF',
+    textColor: '#FFFFFF', 
     highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Times',
@@ -279,10 +278,9 @@ function displayAlertsMenu(alerts){
     status: {
       separator: 'none',
     },
-
     backgroundColor: Feature.color(primary, 'black'),
     highlightBackgroundColor: Feature.color(secondary, 'white'),
-    textColor: '#FFFFFF',
+    textColor: '#FFFFFF', 
     highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Alerts',
@@ -312,8 +310,8 @@ function displayActionWindow(time){
       backgroundColor: "black"
     },
     title: "Add\n" + time.title + " departure to timeline?",
-    backgroundColor: Feature.color(primary, 'black'),
-    titleColor: "#FFFFFF"
+    backgroundColor: Feature.color(primary, 'white'),
+    titleColor: Feature.color("#FFFFFF", 'black')
     
   });
   
