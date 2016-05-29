@@ -9,7 +9,7 @@ var DEBUG = true;
 var API_KEY = '';
 
 var UI = require('ui');
-//var Feature = require('platform/feature');
+var Feature = require('platform/feature');
 var ajax = require('ajax');
 var uitls = require('timeUtils');
 var jsonParse = require('jsonParseUtils');
@@ -47,7 +47,7 @@ function pushpin(time) {
       "title": time.route_name,
       "subtitle": "Ferry Departure",
       "tinyIcon": "system://images/NOTIFICATION_LIGHTHOUSE",
-      "backgroundColor":secondary
+      "backgroundColor":Feature.color(secondary, 'white'),
     }
   };
 
@@ -109,7 +109,7 @@ function displaySuccessScreen(message){
       separator: 'none',
     },
     title: "\n" + message,
-    backgroundColor: accent,
+    backgroundColor: Feature.color(accent, 'black'),
     textAlign:'center',
     titleColor: '#FFFFFF'
   });
@@ -132,10 +132,11 @@ function displayRoutesMenu(data){
     status: {
       separator: 'none',
     },
-    backgroundColor: primary,
-    highlightBackgroundColor: secondary,
+
+    backgroundColor: Feature.color(primary, 'black'),
+    highlightBackgroundColor: Feature.color(secondary, 'white'),
     textColor: '#FFFFFF',
-    highlightTextColor: '#FFFFFF',
+    highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Routes',
       items: data
@@ -174,10 +175,11 @@ function displayDaysMenu(data){
     status: {
       separator: 'none',
     },
-    backgroundColor: primary,
-    highlightBackgroundColor: secondary,
+
+    backgroundColor: Feature.color(primary, 'black'),
+    highlightBackgroundColor: Feature.color(secondary, 'white'),
     textColor: '#FFFFFF',
-    highlightTextColor: '#FFFFFF',
+    highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Departure Day',
       items: items
@@ -217,10 +219,11 @@ function displaySailingsMenu(data){
     status: {
       separator: 'none',
     },
-    backgroundColor: primary,
-    highlightBackgroundColor: secondary,
+
+    backgroundColor: Feature.color(primary, 'black'),
+    highlightBackgroundColor: Feature.color(secondary, 'white'),
     textColor: '#FFFFFF',
-    highlightTextColor: '#FFFFFF',
+    highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Sailings',
       items: data
@@ -247,10 +250,11 @@ function displayTimesMenu(data){
     status: {
       separator: 'none',
     },
-    backgroundColor: primary,
-    highlightBackgroundColor: secondary,
+
+    backgroundColor: Feature.color(primary, 'black'),
+    highlightBackgroundColor: Feature.color(secondary, 'white'),
     textColor: '#FFFFFF',
-    highlightTextColor: '#FFFFFF',
+    highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Times',
       items: data
@@ -275,10 +279,11 @@ function displayAlertsMenu(alerts){
     status: {
       separator: 'none',
     },
-    backgroundColor: primary,
-    highlightBackgroundColor: secondary,
+
+    backgroundColor: Feature.color(primary, 'black'),
+    highlightBackgroundColor: Feature.color(secondary, 'white'),
     textColor: '#FFFFFF',
-    highlightTextColor: '#FFFFFF',
+    highlightTextColor: Feature.color('#FFFFFF', 'black'),
     sections: [{
       title: 'Alerts',
       items: alerts
@@ -307,7 +312,7 @@ function displayActionWindow(time){
       backgroundColor: "black"
     },
     title: "Add\n" + time.title + " departure to timeline?",
-    backgroundColor: primary,
+    backgroundColor: Feature.color(primary, 'black'),
     titleColor: "#FFFFFF"
     
   });
