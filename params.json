@@ -1,0 +1,6 @@
+{
+  "name": "WA Ferries",
+  "tagline": "Washington State Ferries Schedules On Your Wrist",
+  "body": "## About\r\nGet departure times for all Washington State ferries on your Pebble. Check real-time alerts. Pin departure times to your timeline so you never forget!\r\n\r\nCheck it out on the [Pebble App Store](https://apps.getpebble.com/en_US/application/57091fd38448d8e6e4000026).\r\n\r\n## Release Notes\r\n#### Version 1.0\r\n* Ferry Schedules!\r\n* Pin departure times to timeline!\r\n* Check route Alerts!",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
